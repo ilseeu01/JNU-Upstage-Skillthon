@@ -75,7 +75,7 @@ JNU-Upstage-Skillthon/ (내 fork)
 제출 전 검증:
 
 ```bash
-python skills/solar-skill-creator/scripts/validate.py [내-스킬-이름]
+python skills/solar-skill-creator/scripts/quick_validate.py [내-스킬-이름]
 ```
 
 ---

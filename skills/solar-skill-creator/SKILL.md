@@ -132,7 +132,7 @@ The README replaces the 10-page development plan. Each section maps to an evalua
 Run the validation script before submission:
 
 ```bash
-python skills/solar-skill-creator/scripts/validate.py <skill-name>
+python skills/solar-skill-creator/scripts/quick_validate.py <skill-name>
 ```
 
 Fix all errors before submitting. Warnings are optional improvements.
@@ -161,7 +161,7 @@ After testing the skill with real inputs:
 
 After completing the skill creation process, confirm:
 
-- [ ] `python skills/solar-skill-creator/scripts/validate.py <skill-name>` → ✅ 검증 통과
+- [ ] `python skills/solar-skill-creator/scripts/quick_validate.py <skill-name>` → ✅ 검증 통과
 - [ ] `python <skill-name>/skill/main.py` → 에러 없이 실행 완료
 - [ ] README에 실제 실행 결과(출력 로그 또는 스크린샷) 포함
 - [ ] `docs/iteration.md`에 최소 2회 개선 기록

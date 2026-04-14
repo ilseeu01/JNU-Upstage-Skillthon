@@ -406,7 +406,7 @@ def create_skill(name: str, repo_root: Path) -> None:
     print(f"  2. {name}/skill/main.py — Upstage API 구현")
     print(f"  3. python {name}/skill/main.py — 실행 테스트")
     print(f"  4. {name}/README.md — 개발계획서 작성")
-    print(f"  5. python skills/solar-skill-creator/scripts/validate.py {name} — 제출 검증")
+    print(f"  5. python skills/solar-skill-creator/scripts/quick_validate.py {name} — 제출 검증")
 
 
 def main():
