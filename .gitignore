@@ -11,3 +11,4 @@ build/
 *.skill
 .omc/
 .omx/
+.claude/

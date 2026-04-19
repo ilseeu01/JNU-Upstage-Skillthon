@@ -52,6 +52,15 @@ Start by understanding the user's intent. The current conversation might already
 
    If intent spans multiple capabilities, compose them as a pipeline (e.g., OCR → Document Parse → Information Extract). Confirm the mapping with the user in plain language before drafting.
 
+### Verify the API key is set
+
+Every Upstage call needs `UPSTAGE_API_KEY`. Walk the user through this before drafting runtime code:
+
+1. Issue a key at https://console.upstage.ai → API Keys.
+2. Redeem the `UPWAVE-KOH` referral code for $70 in starter credit.
+3. Copy `assets/.env.example` and fill in the issued key.
+4. Confirm `UPSTAGE_API_KEY` is exported in the environment; fail fast with a message pointing back to step 1 if missing.
+
 ### Interview and Research
 
 Proactively ask questions about edge cases, input/output formats, example files, success criteria, and dependencies. Wait to write test prompts until you've got this part ironed out.
