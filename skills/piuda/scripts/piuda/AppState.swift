@@ -12,6 +12,9 @@ final class AppState {
     var userProfile: UserProfile?
     var isOnboarded: Bool = false
 
+    /// 현재 모니터링 중인 데이터셋 피험자(어르신) ID. nil 이면 기본값 사용.
+    var selectedSubjectID: String?
+
     // MARK: - Data
     var reports: [WeeklyReport] = []
     var alerts: [DementiaAlert] = []
@@ -23,6 +26,7 @@ final class AppState {
     let calendar        = CalendarService()
     let watchService    = WatchConnectivityService()
     let firebase        = FirebaseService.shared
+    let demoData        = DemoDataService()   // 치매 고위험군 라이프로그 데이터셋 로더
 
     // MARK: - UI
     var isLoading       = false
@@ -31,7 +35,24 @@ final class AppState {
 
     var unreadAlertCount: Int { alerts.filter { !$0.isAcknowledged }.count }
     var latestReport: WeeklyReport? { reports.first }
-    var elderName: String { userProfile?.name ?? "어르신" }
+    var elderName: String { userProfile?.name ?? selectedSubject?.displayName ?? "어르신" }
+
+    // MARK: - Demo dataset (치매 고위험군 라이프로그)
+
+    /// 데이터셋에서 불러온 피험자 목록 (CN/MCI/Dem 진단 라벨 포함).
+    var availableSubjects: [DemoSubject] { demoData.subjects }
+
+    /// 현재 선택된 피험자. 미선택 시 MCI(경계선) 사례를 기본 — 데모에 가장 적합.
+    var selectedSubject: DemoSubject? {
+        if let id = selectedSubjectID, let s = demoData.subject(id: id) { return s }
+        return demoData.subjects.first { $0.diagnosis == "MCI" } ?? demoData.subjects.first
+    }
+
+    /// 모니터링 대상 어르신을 바꾸고 데이터를 다시 불러온다.
+    func selectDemoSubject(_ id: String) {
+        selectedSubjectID = id
+        loadDemoData()
+    }
 
     // MARK: - Init
 
@@ -80,7 +101,7 @@ final class AppState {
         #if canImport(FirebaseFirestore)
         await loadFromFirebase()
         #else
-        loadMockData()
+        loadDemoData()
         #endif
     }
 
@@ -97,8 +118,19 @@ final class AppState {
             let lastWeekDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date())!
             let lastWeek = await healthKit.fetchWeeklySnapshots(for: lastWeekDate)
 
-            let snaps = thisWeek.isEmpty ? mockSnapshots(degraded: false) : thisWeek
-            let prevSnaps: [HealthSnapshot]? = lastWeek.isEmpty ? nil : lastWeek
+            // 데이터 우선순위: 실제 HealthKit → 데이터셋 피험자 → 최후의 mock
+            let snaps: [HealthSnapshot]
+            let prevSnaps: [HealthSnapshot]?
+            if !thisWeek.isEmpty {
+                snaps = thisWeek
+                prevSnaps = lastWeek.isEmpty ? nil : lastWeek
+            } else if let subject = selectedSubject, !subject.thisWeekSnapshots.isEmpty {
+                snaps = subject.thisWeekSnapshots
+                prevSnaps = subject.previousWeekSnapshots
+            } else {
+                snaps = mockSnapshots(degraded: false)
+                prevSnaps = nil
+            }
 
             // Watch 데이터 병합 (오늘 수신된 데이터가 있으면)
             let mergedSnaps = mergeWatchData(into: snaps)
@@ -303,6 +335,90 @@ final class AppState {
            let profile = try? JSONDecoder().decode(UserProfile.self, from: data) {
             userProfile = profile
             isOnboarded = true
+        }
+    }
+
+    // MARK: - Demo Dataset Loading (치매 라이프로그 → WeeklyReport)
+
+    /// 선택된 피험자의 주간 데이터를 WeeklyReport 목록으로 변환해 채운다.
+    /// 데이터셋을 못 읽으면 mock 데이터로 폴백한다.
+    func loadDemoData() {
+        guard demoData.isLoaded, let subject = selectedSubject else {
+            if let err = demoData.loadError { errorMessage = err }
+            loadMockData()
+            return
+        }
+        selectedSubjectID = subject.subjectId
+        reports = []
+        alerts = []
+
+        // weekIndex 오름차순(0=최근) 순회 → reports[0] 이 최신 주가 되도록
+        let weeks = subject.weeks.sorted { $0.weekIndex < $1.weekIndex }
+        for week in weeks {
+            let snaps = week.snapshots.map(\.asHealthSnapshot)
+            guard !snaps.isEmpty else { continue }
+            let prev = weeks.first { $0.weekIndex == week.weekIndex + 1 }?
+                .snapshots.map(\.asHealthSnapshot)
+            reports.append(buildLocalReport(snapshots: snaps, previous: prev))
+        }
+
+        // 최신 주가 '주의' 이상이면 보호자 알림 1건 생성
+        if let latest = reports.first, agent.shouldAlert(latest) {
+            alerts.append(DementiaAlert(
+                riskLevel: latest.riskLevel,
+                title: "\(subject.displayName) 건강 변화 감지",
+                message: latest.narrative,
+                triggerFactors: latest.keyFindings,
+                recommendedHospitals: agent.recommendedHospitals(for: latest.riskLevel),
+                relatedReportId: latest.id
+            ))
+        }
+    }
+
+    /// LLM 호출 없이 위험 점수 계산만으로 WeeklyReport 를 만든다.
+    /// 앱 실행 시 4주치를 한꺼번에 API 호출하지 않기 위함 — 최신 주는
+    /// 사용자가 "AI 분석"을 실행하면 runAnalysis() 가 Upstage 리포트로 갱신한다.
+    private func buildLocalReport(snapshots: [HealthSnapshot],
+                                  previous: [HealthSnapshot]?) -> WeeklyReport {
+        let prevAvg = previous.map { agent.average($0) }
+        let (score, level, factors) = agent.calculateRisk(snapshots: snapshots, baseline: prevAvg)
+        let avg = agent.average(snapshots)
+        let weekStart = snapshots.map(\.date).min() ?? Date()
+        let weekEnd   = snapshots.map(\.date).max() ?? Date()
+
+        var sleepTrend = 0.0, walkTrend = 0.0, hrvTrend = 0.0
+        if let p = prevAvg {
+            sleepTrend = percentChange(avg.sleepEfficiency, p.sleepEfficiency)
+            walkTrend  = percentChange(avg.walkingSpeed, p.walkingSpeed)
+            hrvTrend   = percentChange(avg.heartRateVariability, p.heartRateVariability)
+        }
+
+        return WeeklyReport(
+            weekStart: weekStart, weekEnd: weekEnd,
+            riskLevel: level, riskScore: score,
+            narrative: level.description,
+            keyFindings: factors.isEmpty ? ["뚜렷한 이상 신호 없음"] : factors,
+            recommendations: AppState.recommendations(for: level),
+            snapshots: snapshots, generatedAt: Date(),
+            sleepTrend: sleepTrend, walkingTrend: walkTrend, hrvTrend: hrvTrend
+        )
+    }
+
+    private func percentChange(_ current: Double, _ previous: Double) -> Double {
+        guard previous != 0 else { return 0 }
+        return (current - previous) / previous * 100
+    }
+
+    private static func recommendations(for level: RiskLevel) -> [String] {
+        switch level {
+        case .low:
+            return ["현재 생활 패턴 유지", "주간 인지 테스트 꾸준히 진행"]
+        case .moderate:
+            return ["규칙적인 취침·기상 시간 유지", "낮 시간 가벼운 산책 권장"]
+        case .high:
+            return ["신경과 또는 치매안심센터 상담 권장", "수면 환경 점검"]
+        case .critical:
+            return ["가까운 신경과 진료를 빠른 시일 내 권장", "보호자 동행 필요"]
         }
     }
 

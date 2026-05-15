@@ -53,8 +53,8 @@ Upstage Solar LLM → 한국어 주간 리포트 생성
 Solar LLM을 사용해 한국어 주간 건강 리포트를 생성합니다.
 
 ```
-POST https://api.upstage.ai/v1/solar/chat/completions
-Model: solar-pro
+POST https://api.upstage.ai/v1/chat/completions
+Model: solar-pro3
 ```
 
 **프롬프트 구조:**

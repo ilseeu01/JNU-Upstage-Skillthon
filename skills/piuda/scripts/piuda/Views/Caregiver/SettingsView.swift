@@ -66,12 +66,43 @@ struct SettingsView: View {
                     }
                 }
 
+                // 모니터링 대상 (치매 고위험군 라이프로그 데이터셋)
+                if !state.availableSubjects.isEmpty {
+                    Section {
+                        ForEach(state.availableSubjects) { subject in
+                            Button {
+                                state.selectDemoSubject(subject.subjectId)
+                            } label: {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(subject.displayName)
+                                            .foregroundStyle(.primary)
+                                        Text("\(subject.diagnosisLabel) · MMSE \(subject.mmseTotal)/30")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    if state.selectedSubject?.subjectId == subject.subjectId {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.tint)
+                                    }
+                                }
+                            }
+                        }
+                    } header: {
+                        Text("모니터링 대상 어르신")
+                    } footer: {
+                        Text("AI-Hub 치매 고위험군 라이프로그 데이터셋의 실제 피험자입니다. "
+                             + "괄호 안 진단명은 데이터셋의 정답 라벨입니다.")
+                    }
+                }
+
                 // 데이터
                 Section("데이터") {
                     Button {
-                        state.loadMockData()
+                        state.loadDemoData()
                     } label: {
-                        Label("샘플 데이터 불러오기", systemImage: "arrow.counterclockwise")
+                        Label("데이터셋 다시 불러오기", systemImage: "arrow.counterclockwise")
                     }
                 }
 

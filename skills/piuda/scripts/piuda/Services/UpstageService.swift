@@ -6,7 +6,7 @@ final class UpstageService {
     private init() {}
 
     private let baseURL = "https://api.upstage.ai/v1"
-    private let model   = "solar-pro"
+    private let model   = "solar-pro3"
 
     var apiKey: String {
         get { UserDefaults.standard.string(forKey: "upstage_api_key") ?? "" }
@@ -93,19 +93,27 @@ final class UpstageService {
         p += "【이번 주 평균】\n"
         p += "• 수면 효율: \(Int(avg.sleepEfficiency * 100))%\n"
         p += "• 야간 각성: 평균 \(avg.nightWakeCount)회\n"
-        p += "• 보행 속도: \(String(format: "%.2f", avg.walkingSpeed)) m/s\n"
+        // 보행 속도는 데이터 출처에 따라 측정되지 않을 수 있음(0) — 측정된 경우만 포함
+        if avg.walkingSpeed > 0 {
+            p += "• 보행 속도: \(String(format: "%.2f", avg.walkingSpeed)) m/s\n"
+        }
         p += "• 하루 걸음 수: \(avg.stepCount)보\n"
+        p += "• 깊은 수면 비율: \(Int(avg.deepSleepRatio * 100))%\n"
         p += "• HRV: \(Int(avg.heartRateVariability)) ms\n"
         if let cog = avg.cognitiveScore { p += "• 인지 테스트: \(Int(cog))/100\n" }
 
         if let prev = previous {
             p += "\n【전주 대비】\n"
             let d = { (a: Double, b: Double) -> String in
+                guard b != 0 else { return "—" }
                 let pct = (a - b) / b * 100
                 return "\(pct >= 0 ? "+" : "")\(Int(pct))%"
             }
             p += "• 수면 효율: \(d(avg.sleepEfficiency, prev.sleepEfficiency))\n"
-            p += "• 보행 속도: \(d(avg.walkingSpeed, prev.walkingSpeed))\n"
+            if avg.walkingSpeed > 0, prev.walkingSpeed > 0 {
+                p += "• 보행 속도: \(d(avg.walkingSpeed, prev.walkingSpeed))\n"
+            }
+            p += "• 걸음 수: \(d(Double(avg.stepCount), Double(prev.stepCount)))\n"
             p += "• HRV: \(d(avg.heartRateVariability, prev.heartRateVariability))\n"
         }
 
@@ -177,7 +185,7 @@ final class UpstageService {
 
     private func chat(system: String, user: String) async throws -> String {
         guard !apiKey.isEmpty else { throw UpstageError.missingAPIKey }
-        guard let url = URL(string: "\(baseURL)/solar/chat/completions") else {
+        guard let url = URL(string: "\(baseURL)/chat/completions") else {
             throw UpstageError.invalidURL
         }
         var req = URLRequest(url: url)

@@ -40,14 +40,16 @@ final class DementiaAgentService {
             factors.append("야간 각성 횟수 증가")
         }
 
-        // 보행 속도
-        let walkDrop = (base.walkingSpeed - avg.walkingSpeed) / base.walkingSpeed
-        if walkDrop > 0.15 {
-            score += 3
-            factors.append("보행 속도 \(Int(walkDrop * 100))% 감소")
-        } else if walkDrop > 0.08 {
-            score += 1
-            factors.append("보행 속도 소폭 저하")
+        // 보행 속도 — 데이터 출처에 따라 측정되지 않을 수 있어(0), 그 경우 점수에서 제외
+        if avg.walkingSpeed > 0, base.walkingSpeed > 0 {
+            let walkDrop = (base.walkingSpeed - avg.walkingSpeed) / base.walkingSpeed
+            if walkDrop > 0.15 {
+                score += 3
+                factors.append("보행 속도 \(Int(walkDrop * 100))% 감소")
+            } else if walkDrop > 0.08 {
+                score += 1
+                factors.append("보행 속도 소폭 저하")
+            }
         }
 
         // HRV
