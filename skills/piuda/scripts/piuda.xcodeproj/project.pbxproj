@@ -376,6 +376,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "건강 데이터(수면, 걸음 수, 심박수)를 분석하여 치매 위험도를 평가합니다.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "인지 테스트 결과를 건강 기록에 저장합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -407,6 +409,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "건강 데이터(수면, 걸음 수, 심박수)를 분석하여 치매 위험도를 평가합니다.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "인지 테스트 결과를 건강 기록에 저장합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
