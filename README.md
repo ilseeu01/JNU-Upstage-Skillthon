@@ -1,164 +1,187 @@
-# JNU × Upstage Skillthon
+<div align="center">
 
-> **전남대학교 소프트웨어중심대학 × 업스테이지**
-> 2026 교내 디지털 경진대회 (SW부문)
+# 🌸 피우다 (Piuda)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Powered by Upstage](https://img.shields.io/badge/Powered%20by-Upstage%20Solar-blue)](https://upstage.ai)
-[![Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-orange)](https://claude.ai/code)
+### 가족이 멀리 있어도, 부모님의 뇌 건강을 매일 곁에서 지킵니다
 
----
+Apple Watch가 수집한 일상 데이터를 **Upstage Solar LLM**이 매일 분석해,
+치매가 의심되는 변화를 **자녀가 알아채기 전에** 먼저 알려주는 AI Agent 플랫폼
 
-## 목차
+<br/>
 
-- [JNU × Upstage Skillthon](#jnu--upstage-skillthon)
-  - [목차](#목차)
-  - [Skillthon이란?](#skillthon이란)
-  - [크레딧 지원 — $70 무료 제공](#크레딧-지원--70-무료-제공)
-    - [크레딧 받는 방법](#크레딧-받는-방법)
-  - [사전 요구사항](#사전-요구사항)
-  - [시작하는 방법](#시작하는-방법)
-    - [1단계 — Repo Fork](#1단계--repo-fork)
-    - [2단계 — Clone \& 열기](#2단계--clone--열기)
-    - [3단계 — solar-skill-creator 설치](#3단계--solar-skill-creator-설치)
-    - [4단계 — Skill 만들기](#4단계--skill-만들기)
-  - [제출 구성](#제출-구성)
-  - [References](#references)
-  - [문의](#문의)
+[![Powered by Upstage](https://img.shields.io/badge/Powered%20by-Upstage%20Solar-5A4FFF?style=flat-square)](https://upstage.ai)
+[![Platform](https://img.shields.io/badge/Platform-iOS%20%2B%20watchOS-000000?style=flat-square&logo=apple)](https://developer.apple.com)
+[![Built with](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?style=flat-square)](https://claude.ai/code)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+<sub>JNU × Upstage Skillthon — 2026 전남대학교 소프트웨어중심대학 디지털 경진대회 출품작</sub>
+
+<br/>
+
+<img src="assets/demo.gif" width="260" alt="피우다 iOS 앱 데모" />
+
+</div>
 
 ---
 
-## Skillthon이란?
+## 🩺 어떤 문제를 푸나요?
 
-**하나의 Skill을 만드는 대회**입니다.
+> 부모님의 치매는 **이미 진행된 뒤에야** 가족의 눈에 띕니다.
 
-> **Skills for Your Daily Life** — 일상의 문제를 해결하는 AI Agent용 모듈을 만듭니다.
+- 보건소 인지선별검사(CIST)는 **1년에 한 번**. 그 사이의 변화는 아무도 추적하지 않습니다.
+- 자녀가 명절에 만나 "엄마 말이 줄었네" 느낄 즈음엔 이미 경도인지장애(MCI)가 진행 중입니다.
+- 카카오톡 안부 인사로는 *"괜찮다"* 는 대답밖에 받지 못합니다.
 
-Skill은 AI Agent가 필요할 때 꺼내 쓰는 **단일 목적 도구**입니다. 사람이 직접 호출하지 않아도, Agent가 상황을 판단해 스스로 Skill을 선택·실행합니다.
+**피우다는 진단하지 않습니다.** 대신 노인이 매일 차는 Apple Watch에서
+수면·보행·심박·인지 데이터를 모아, 의미 있는 변화가 보일 때 자녀에게
+**객관적인 근거와 함께** 알려줍니다.
 
-## 크레딧 지원 — $70 무료 제공
+| | 노인 (착용자) | 보호자 (자녀) |
+|---|---|---|
+| **하는 일** | Apple Watch만 착용 · 주 1회 30초 인지 테스트 | iPhone 앱으로 주간 리포트 확인 |
+| **얻는 것** | 존엄을 지키며 가족과 연결됨 | 죄책감 대신 객관적 근거에 기반한 케어 |
+
+---
+
+## 📱 화면 미리보기
+
+<div align="center">
+
+| 홈 — AI 위험 분석 | 주간 리포트 | 병원 예약 자동화 | Apple Watch |
+|:---:|:---:|:---:|:---:|
+| <img src="assets/app-home.png" width="180"/> | <img src="assets/app-report.png" width="180"/> | <img src="assets/app-booking.png" width="180"/> | <img src="assets/watch.png" width="180"/> |
+| Solar LLM이 쓴 한국어 위험 분석과 주간 지표 | 보행 속도 추세 · 인지 테스트 점수 · 권고사항 | 가까운 신경과·치매안심센터 추천 + 캘린더 연동 | 노인용 화면 — 걸음 수와 인지 테스트 |
+
+</div>
+
+---
+
+## ⚙️ 어떻게 동작하나요?
+
+```
+   Apple Watch                iPhone                     Upstage Solar LLM
+┌──────────────┐   Watch    ┌──────────────────┐        ┌──────────────────┐
+│ 수면 · 걸음   │ Connectivity│ HealthKit 수집   │  API   │ 한국어 주간 리포트 │
+│ 심박 · HRV    │ ─────────► │ + 위험 점수 계산 │ ─────► │ 위험 수준 판정     │
+│ 인지 테스트   │            │   (0–20점)       │        │ 보호자 알림 메시지 │
+└──────────────┘            └──────────────────┘        └──────────────────┘
+                                     │                            │
+                                     └──── moderate 이상 ──────────┘
+                                              │
+                                   보호자 푸시 알림 + 병원 예약 추천
+```
+
+### 위험 점수 알고리즘 (0–20점)
+
+| 지표 | 정상 기준 | 배점 |
+|------|-----------|------|
+| 수면 효율 | ≥ 85% | 0–4점 |
+| 야간 각성 횟수 | ≤ 2회 | 0–3점 |
+| 보행 속도 | ≥ 1.0 m/s | 0–4점 |
+| HRV (SDNN) | ≥ 30 ms | 0–3점 |
+| 일일 걸음 수 | ≥ 5,000보 | 0–3점 |
+| 인지 테스트 점수 | ≥ 80점 | 0–3점 |
+
+| 점수 | 수준 | 동작 |
+|---|---|---|
+| 0–5 | 🟢 낮음 | 정기 모니터링 |
+| 6–10 | 🟡 보통 | 보호자 알림 발송 |
+| 11–15 | 🟠 높음 | 병원 방문 권고 |
+| 16–20 | 🔴 위험 | 즉시 병원 예약 |
+
+---
+
+## 📦 이 레포의 구성
+
+피우다는 두 개의 [Anthropic Skill](https://docs.anthropic.com/en/docs/claude-code/) 로 제출되었습니다.
+
+| Skill | 설명 |
+|---|---|
+| [`skills/piuda`](skills/piuda/SKILL.md) | iOS + watchOS 앱 전체 — HealthKit 수집, 위험 점수 계산, Solar LLM 연동, 병원 예약 |
+| [`skills/brain-health-weekly-report`](skills/brain-health-weekly-report/SKILL.md) | 주간 건강 데이터(JSON) → 보호자용 한국어 리포트를 만드는 독립 실행형 Python 스킬 |
+
+### 🚀 주간 리포트 스킬 바로 실행해보기
+
+```bash
+cd skills/brain-health-weekly-report
+pip install -r scripts/requirements.txt
+
+# Upstage API 키 설정
+cp assets/.env.example assets/.env   # assets/.env 에 UPSTAGE_API_KEY 입력
+
+python scripts/generate_report.py assets/sample_week.json
+```
+
+샘플 데이터(`sample_week.json`)는 수면 효율 78→65, 새벽 각성 1.1→3.3회로
+여러 지표가 동시에 악화된 한 주입니다. 정상 동작 시 위험 수준이
+`관찰 권장` 또는 `주의 필요` 로 나옵니다.
+
+---
+
+## 🛠 기술 스택
+
+| 레이어 | 기술 |
+|--------|------|
+| AI 분석 | Upstage Solar LLM (`solar-pro`) |
+| 건강 데이터 | Apple HealthKit |
+| Watch ↔ iPhone | WatchConnectivity |
+| 백엔드 | Firebase Firestore + FCM *(선택 — 없으면 Mock 데이터로 동작)* |
+| 병원 예약 | EventKit |
+| 차트 | Swift Charts |
+| 상태 관리 | `@Observable` (iOS 17+) |
+
+### iOS 앱 빌드
+
+```
+1. Xcode → skills/piuda/scripts/piuda.xcodeproj 열기
+2. piuda 타겟 → Signing & Capabilities → Team 선택
+3. HealthKit capability 추가 (iOS + watchOS 타겟 모두)
+4. 설정 탭에서 Upstage API 키 입력 후 Build & Run
+```
+
+---
+
+## ⚖️ 면책
+
+피우다는 **의료기기가 아닌 wellness(생활 건강) 도구**입니다.
+치매를 포함한 어떤 질병도 진단·단정하지 않으며, 일상 데이터의 변화를
+가족에게 전달할 뿐입니다. 모든 리포트는 *"의학적 진단이 아닙니다"* 를 명시하며,
+한 번의 잘못된 경보가 가족 관계를 해치지 않도록 **침착하고 비난 없는 어조**를
+설계 원칙으로 삼습니다.
+
+---
+
+<details>
+<summary><b>🎓 Skillthon 참가 안내 — Upstage 크레딧 $70 무료 지원</b></summary>
+
+<br/>
 
 대회 참가자 전원에게 **Upstage API 크레딧 $70**을 무료로 지원합니다.
 
-### 크레딧 받는 방법
+1. [console.upstage.ai](https://console.upstage.ai) 회원가입 / 로그인
+2. **Dashboard → Billing → Credit → Redeem code**
+3. 아래 코드 입력
 
-1. **[console.upstage.ai](https://console.upstage.ai)** 에 회원가입 / 로그인
-2. 상단 **Dashboard** 탭 클릭
-3. 좌측 메뉴 **Billing → Credit** 클릭
-4. 우측 **Redeem code** 버튼 클릭
+   ```
+   UPWAVE-KOH
+   ```
 
 ![Upstage 크레딧 리딤 방법](assets/referral_code.jpg)
 
-5. 아래 코드 입력 후 확인
-
-```
-UPWAVE-KOH
-```
-
-> **$70 크레딧이 즉시 적립됩니다.**
-
----
-
-## 사전 요구사항
-
-| 도구 | 버전 | 용도 |
-|------|------|------|
-| [Claude Code](https://claude.ai/code) | 최신 | Skill 개발 환경 |
-| Git | — | Fork & Clone |
-| Upstage API 키 | — | [위 크레딧 지원](#크레딧-지원--70-무료-제공)으로 발급 |
-
----
-
-## 시작하는 방법
-
-> **이 가이드는 [Claude Code](https://claude.ai/code) 기준으로 작성되었습니다.**
-
-### 1단계 — Repo Fork
-
-GitHub 우측 상단 **Fork** 버튼 클릭
-
-### 2단계 — Clone & 열기
-
-```bash
-git clone https://github.com/[내-username]/JNU-Upstage-Skillthon
-cd JNU-Upstage-Skillthon
-claude .
-```
-
-### 3단계 — solar-skill-creator 설치
-
-Claude Code 내에서 실행:
-
-```
-/plugin marketplace add GoBeromsu/JNU-Upstage-Skillthon
-/plugin install solar-skill-creator@solar-skill-creator
-```
-
-> 설치 확인: Claude Code 내에서 `/plugin list` 또는 `/skills` 실행 → `solar-skill-creator` 목록에 표시
-
-### 4단계 — Skill 만들기
-
-Claude Code 프롬프트에 아래와 같이 입력하세요.  
-**Upstage API 키 설정 등 모든 초기 설정을 solar-skill-creator가 안내합니다.**
-
-```
-> 내 주변의 버터떡을 파는 곳을 가져오는 스킬을 만들고 싶어요
-```
-
-solar-skill-creator가 순서대로 안내하는 항목:
-1. Upstage API 키 입력 및 `.env` 설정
-2. 만들 스킬 아이디어 인터뷰
-3. 스킬 코드 생성 및 테스트
-4. 제출용 파일 구조 완성
-
-완성된 스킬 디렉토리가 repo 루트에 생성됩니다.
-
----
-
-## 제출 구성
-
-Fork된 repo의 `skills/` 아래에 **Anthropic 표준 Skill 포맷**으로 스킬을 추가합니다:
-
-```
-JNU-Upstage-Skillthon/
-└── skills/
-    ├── [내-스킬-이름]/
-    │   ├── SKILL.md              # 필수: name·description + 스킬 지침
-    │   ├── scripts/              # 선택: 실행 코드 (Upstage API 호출 등)
-    │   ├── references/           # 선택: 참조 문서
-    │   └── assets/               # 선택: 템플릿·파일 등
-    └── solar-skill-creator/      # 수정 금지
-```
-
-**SKILL.md 필수 frontmatter:**
-
-```yaml
----
-name: my-skill-name
-description: 이 스킬이 하는 일과 언제 사용해야 하는지. (WHAT + WHEN)
----
-```
-
-**제출 전 체크리스트:**
-
-- [ ] `SKILL.md`에 `name`과 `description`이 작성됨
-- [ ] Claude Code에서 스킬이 정상 동작함
-- [ ] `.env` 파일이 커밋되지 않음 (API 키 노출 방지)
-
-
-## References
-
 | 문서 | 설명 |
 |------|------|
-| [solar-skill-creator Marketplace](https://github.com/GoBeromsu/JNU-Upstage-Skillthon) | 이 repo — `solar-skill-creator` 마켓플레이스 |
-| [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/) | Claude Code 공식 문서 (Skills, Plugins, Marketplace) |
-| [Upstage Console Docs](https://console.upstage.ai/docs/capabilities) | Solar LLM, Embeddings, Document Parse API 레퍼런스 |
-| [Upstage API Spec (machine-readable)](https://console.upstage.ai/api/docs/for-agents/raw) | Agent가 바로 읽을 수 있는 Upstage API 원본 스펙 |
+| [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/) | Skills · Plugins · Marketplace |
+| [Upstage Console Docs](https://console.upstage.ai/docs/capabilities) | Solar LLM, Embeddings, Document Parse |
+| [Upstage API Spec](https://console.upstage.ai/api/docs/for-agents/raw) | Agent용 머신 리더블 스펙 |
+
+</details>
 
 ---
 
-## 문의
+## 📮 문의
 
-- **담당:** 조아라 연구원 / 고범수
-- **전화:** 062-530-5364 / 010-4012-1143
-- **이메일:** [rha852@jnu.ac.kr](mailto:rha852@jnu.ac.kr) / [gobeumsu@gmail.com](mailto:gobeumsu@gmail.com)
+- **Skillthon 운영:** 조아라 연구원 / 고범수 — [rha852@jnu.ac.kr](mailto:rha852@jnu.ac.kr) · [gobeumsu@gmail.com](mailto:gobeumsu@gmail.com)
+
+<div align="center">
+<sub>🌸 꽃이 피어나듯, 건강하게 — Piuda</sub>
+</div>

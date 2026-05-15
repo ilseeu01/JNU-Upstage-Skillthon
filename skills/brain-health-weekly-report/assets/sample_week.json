@@ -1,0 +1,22 @@
+{
+  "elder_name": "김영자",
+  "week_of": "2026-05-08 ~ 2026-05-14",
+  "current_week": {
+    "sleep_efficiency_pct": 65,
+    "night_awakenings_avg": 3.3,
+    "gait_speed_mps": 0.92,
+    "daily_steps_avg": 3100,
+    "resting_hr_bpm": 73,
+    "hrv_rmssd_ms": 18,
+    "cognitive_test_score": 7
+  },
+  "previous_week": {
+    "sleep_efficiency_pct": 78,
+    "night_awakenings_avg": 1.1,
+    "gait_speed_mps": 1.0,
+    "daily_steps_avg": 4200,
+    "resting_hr_bpm": 70,
+    "hrv_rmssd_ms": 22,
+    "cognitive_test_score": 8
+  }
+}
